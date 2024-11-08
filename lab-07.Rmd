@@ -39,42 +39,53 @@ evals %>%
 2.  Visualize and describe the relationship between `score` and `bty_avg` using `geom_point()` to represent the data. 
 
 ```{r scatterplot}
-# add code here
+evals %>%
+  ggplot(aes(score, bty_avg)) +
+  geom_point()
+
+evals %>%
+  ggplot(aes(score, bty_avg)) +
+  geom_jitter()
+
 ```
 
-*Add your narrative and other details here.*
+*Jitter adds random offsets to the points - this allows us to see there is some positive correlation between the variables which was not clear in the first plot.*
 
 # Exercise 2: Simple Linear regression with a numerical predictor
 
 1. Fit a linear model called `score_bty_fit` to predict average professor evaluation `score` from average beauty rating (`bty_avg`). Print the regression output using `tidy()`.
 
-```{r fit-score_bty_fit, eval = FALSE}
+```{r fit-score_bty_fit}
 # remove eval = FALSE from the code chunk options after filling in the blanks
 score_bty_fit <- linear_reg() %>%
   set_engine("lm") %>%
-  fit(___ ~ ___, data = ___)
+  fit(score ~ bty_avg, data = evals)
 ```
 
-```{r tidy-score_bty_fit, eval = FALSE}
+```{r tidy-score_bty_fit}
 # remove eval = FALSE from the code chunk options after filling in the blanks
-tidy(___)
+tidy(score_bty_fit)
 ```
 
-*Add your linear model here. Don't worry too much about notation, you can use things like score-hat.*
+*y = 0.0666x + 3.88*
 
 2. Plot the data again using `geom_jitter()`, and add the regression line.
 
 ```{r viz-score_bty_fit,eval=FALSE}
 # add your plot here. Hint, you can add the regression line using geom_smooth()
+evals %>%
+  ggplot(aes(score, bty_avg)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se=FALSE)
 ```
 
 3. Interpret the slope of the linear model in context of the data.
 
-*Add your interpretation here*
+*As the beauty rating average increases so does the score.*
 
 4. Interpret the intercept of the linear model in context of the data. Comment on whether or not the intercept makes sense in this context.
 
-*Add your interpretation here*
+*When the score is 0, then beautfy average is 3.88 - this doesn't make sense in context as no 0 scores.*
 
 5. Determine the $R^2$ of the model and interpret it in the context of the data.
 
