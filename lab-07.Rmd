@@ -89,20 +89,22 @@ evals %>%
 
 5. Determine the $R^2$ of the model and interpret it in the context of the data.
 
-```{r R2, eval = FALSE}
+```{r R2}
 # remove eval = FALSE from the code chunk options after filling in the blanks
-glance(___)$___
+glance(score_bty_fit)$r.squared
 ```
 
-*Add your interpretation here*
+*Quite low R^2 suggest that the line misses many of the points and so correlation is relatively weak.*
 
 6. Make a plot of residuals vs. predicted values for the model above.
 
-```{r viz-score_bty_fit-diagnostic, eval = FALSE}
+```{r viz-score_bty_fit-diagnostic}
 # remove eval = FALSE from the code chunk options after filling in the blanks
 score_bty_aug <- augment(score_bty_fit$fit)
 
-ggplot(___) + ...
+ggplot(score_bty_aug, aes(.fitted, .resid)) +
+  geom_jitter() + 
+  geom_hline(yintercept = 0, linetype = "dashed")
 ```
 
 # Exercise 3: Simple Linear regression with a categorical predictor
@@ -110,28 +112,35 @@ ggplot(___) + ...
 0. Look at the variable rank, and determine the frequency of each category level.
 
 ```{r}
-# ... 
+evals %>%
+  count(rank)
 ```
 
 1. Fit a new linear model called `score_rank_fit` to predict average professor evaluation `score` based on `rank` of the professor.
 
 ```{r fit-score_rank_fit}
 # fit model
-
+score_rank_fit <- linear_reg() %>%
+  set_engine("lm") %>%
+  fit(score ~ rank, data = evals)
 # tidy model output
+tidy(score_rank_fit)
 ```
 
-*Add your narrative here.*
+*Intercept at 4.28 shows if teaching then this is average score, then decreases for tenure track professors (-0.130) and tenured ones (-0.145) - negative gradient.*
 
 2. Fit a new linear model called `score_gender_fit` to predict average professor evaluation `score` based on `gender` of the professor. 
 
 ```{r fit-score_gender_fit}
 # fit model
-
+score_gender_fit <- linear_reg() %>%
+  set_engine("lm") %>%
+  fit(score ~ gender, data = evals)
 # tidy model output
+tidy(score_gender_fit)
 ```
 
-```{r score_gender_intercept, eval=FALSE}
+```{r score_gender_intercept}
 # remove eval = FALSE from the code chunk options
 score_gender_intercept <- tidy(score_gender_fit) %>% 
   filter(term == "(Intercept)") %>%
@@ -139,7 +148,7 @@ score_gender_intercept <- tidy(score_gender_fit) %>%
   pull()
 ```
 
-```{r score_gender_slope, eval=FALSE}
+```{r score_gender_slope}
 # remove eval = FALSE from the code chunk options
 score_gender_slope <- tidy(score_gender_fit) %>% 
   filter(term == "gendermale") %>%
@@ -147,7 +156,7 @@ score_gender_slope <- tidy(score_gender_fit) %>%
   pull()
 ```
 
-*Add your narrative here. Use in-line code!*
+*The intercept of the model is `r round(score_gender_intercept, 2)` and the gradient is `r round(score_gender_slope, 2)`.*
 
 # Exercise 4: Multiple linear regression
 
